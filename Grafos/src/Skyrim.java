@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Skyrim {
+public class Skyrim { //graph
     private List<Village> villages;
     private List<Route> routes;
 

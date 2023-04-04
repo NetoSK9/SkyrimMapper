@@ -1,13 +1,12 @@
-public class Village { //vertices
+public class Village { //vertex
     private int id;
-    private int coordenadas_x;
-    private int coordenadas_y;
+    private int xAxisCoordinates;
+    private int yAxisCoordinates;
 
-    public Village(int id, int coordenadas_x, int coordenadas_y){
+    public Village(int id, int x, int y){
         this.id = id;
-        this.coordenadas_x = coordenadas_x;
-        this.coordenadas_y = coordenadas_y;
-
+        this.xAxisCoordinates = x;
+        this.yAxisCoordinates = y;
     }
 
     public int getId() {
@@ -15,11 +14,11 @@ public class Village { //vertices
     }
 
     public int getX() {
-        return coordenadas_x;
+        return xAxisCoordinates;
     }
 
     public int getY() {
-        return coordenadas_y;
+        return yAxisCoordinates;
     }
 }
 

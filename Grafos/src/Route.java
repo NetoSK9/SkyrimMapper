@@ -1,11 +1,11 @@
-public class Route {
+public class Route { //edge
     private Village origin;
     private Village destiny;
     private int weight;
 
-    public Route(Village o, Village d, int weight){
-        this.origin = o;
-        this.destiny = d;
+    public Route(Village origin, Village destiny, int weight){
+        this.origin = origin;
+        this.destiny = destiny;
         this.weight = weight;
     }
 
@@ -20,6 +20,4 @@ public class Route {
     public int getWeight() {
         return weight;
     }
-
-
 }
