@@ -67,4 +67,67 @@ public class Skyrim { //graph
 
         return matrix;
     }
+
+    public void printMatrixAdj(int[][] matrix) {
+        System.out.println("Matrix Adj:");
+
+        System.out.print("\t");
+        for (int i = 0; i < matrix[0].length; i++) {
+            System.out.print("V" + (i + 1) + "\t");
+        }
+        System.out.println();
+
+        for (int i = 0; i < matrix.length; i++) {
+            System.out.print("V" + (i + 1) + ":\t");
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    public int[] dijkstra(Village origin) {
+        int n = villages.size();
+        int[] distance = new int[n];
+        boolean[] visited = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            distance[i] = Integer.MAX_VALUE;
+            visited[i] = false;
+        }
+
+        int iOrigin = getIndexVillage(origin);
+        distance[iOrigin] = 0;
+
+        for (int i = 0; i < n - 1; i++) {
+            int u = minimumDistance(distance, visited);
+            visited[u] = true;
+
+            for (int j = 0; j < n; j++) {
+                if (!visited[j] && getRoute(getVillage(u), getVillage(j)) != null) {
+                    int peso = getRoute(getVillage(u), getVillage(j)).getWeight();
+
+                    if (distance[u] != Integer.MAX_VALUE && distance[u] + peso < distance[j]) {
+                        distance[j] = distance[u] + peso;
+                    }
+                }
+            }
+        }
+
+        return distance;
+    }
+
+    private int minimumDistance(int[] dist, boolean[] visited) {
+        int min = Integer.MAX_VALUE;
+        int minIndice = -1;
+
+        for (int i = 0; i < dist.length; i++) {
+            if (!visited[i] && dist[i] <= min) {
+                min = dist[i];
+                minIndice = i;
+            }
+        }
+
+        return minIndice;
+    }
 }
