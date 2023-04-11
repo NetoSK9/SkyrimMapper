@@ -65,7 +65,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        Village village = new Village(villages.size(), x, y);
+        Village village = new Village("Teste",villages.size(), x, y);
         System.out.println("Clicked at (" + village.getX() + ", " + village.getY() + ")");
         villages.add(village);
         addPointButtonRed(x,y);
