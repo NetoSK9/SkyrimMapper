@@ -12,8 +12,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private ArrayList<Route> routes;
     private ArrayList<Point> points;
     private ArrayList<Button> buttons;
+    private int clickCount;
     private Button lastClickedButton = null;
     private BufferedImage imageBG;
+    private Skyrim skyrim;
 
     public MapPositionsDefiner() {
         super("Click Listener");
@@ -25,6 +27,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
+        skyrim = new Skyrim();
 
     }
 
@@ -49,21 +52,52 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
+        skyrim.setVillages(points);
+        skyrim.setRoutes(routes);
+        clickCount++;
         if (lastClickedButton == null) {
             lastClickedButton = (Button) source;
             lastClickedButton.setBackground(Color.GREEN);
         } else {
-            Point pointStart = lastClickedButton.getLocationOnScreen();
-            pointStart.x += lastClickedButton.getWidth() / 2;
-            pointStart.y += lastClickedButton.getHeight() / 2;
-            Point pointEnd = ((Button) source).getLocationOnScreen();
-            pointEnd.x += ((Button) source).getWidth() / 2;
-            pointEnd.y += ((Button) source).getHeight() / 2;
-            addRouteInMap(pointStart, pointEnd);
-            lastClickedButton.setBackground(Color.RED);
-            lastClickedButton = null;
-            ((Button) source).setBackground(Color.RED);
+            if (lastClickedButton!=((Button) source)){
+                if (lastClickedButton.getBackground() == Color.GREEN){
+                    Point pointStart = lastClickedButton.getLocationOnScreen();
+                    pointStart.x += lastClickedButton.getWidth() / 2;
+                    pointStart.y += lastClickedButton.getHeight() / 2;
+                    Point pointEnd = ((Button) source).getLocationOnScreen();
+                    pointEnd.x += ((Button) source).getWidth() / 2;
+                    pointEnd.y += ((Button) source).getHeight() / 2;
+                    addRouteInMap(pointStart, pointEnd);
+                    lastClickedButton.setBackground(Color.RED);
+                    lastClickedButton = null;
+                    ((Button) source).setBackground(Color.RED);
+                    clickCount=0;
+                } else if(lastClickedButton.getBackground() == Color.BLUE){
+                    //calcular e mostrar menor rota
+
+                    lastClickedButton.setBackground(Color.RED);
+                    lastClickedButton = null;
+                    ((Button) source).setBackground(Color.RED);
+                    clickCount=0;
+                } else if(lastClickedButton.getBackground() == Color.RED){
+                    drawAllLinesBlack();
+                    lastClickedButton.setBackground(Color.RED);
+                    lastClickedButton = null;
+                    ((Button) source).setBackground(Color.RED);
+                    clickCount = 0;
+                }
+            }else{
+                if (clickCount == 1) {
+                    lastClickedButton.setBackground(Color.GREEN);
+                } else if (clickCount == 2) {
+                    lastClickedButton.setBackground(Color.BLUE);
+                } else {
+                    lastClickedButton.setBackground(Color.RED);
+                    clickCount=0;
+                }
+            }
         }
+        System.out.println(clickCount);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -98,6 +132,38 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         Graphics g = getGraphics();
         g.setColor(route.getColor());
         g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+    }
+
+    private void selectLineByPoints(Point startPoint, Point endPoint){
+        for (Route route : routes) {
+            if( (startPoint.getLocation()==route.getOrigin().getLocation()) && (endPoint.getLocation()==route.getDestiny().getLocation()) ){
+                System.out.println("Achou!!!!! A rota: "+ route.getWeight());
+                route.setColor(Color.RED);
+            }
+        }
+    }
+
+    private void drawAllLines(){
+        for (Route route : routes) {
+            Graphics g = getGraphics();
+            g.setColor(route.getColor());
+            g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+        }
+
+    }
+    private void setAllLinesToBlack(){
+        for (Route route : routes) {
+            route.setColor(Color.BLACK);
+        }
+
+    }
+    private void drawAllLinesBlack(){
+        for (Route route : routes) {
+            Graphics g = getGraphics();
+            g.setColor(Color.black);
+            g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+        }
+
     }
 
 

@@ -27,6 +27,14 @@ public class Skyrim { //graph
         return routes;
     }
 
+    public void setVillages(List<Point> villages) {
+        this.villages = villages;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
     public int getIndexVillage(Point v){
         return villages.indexOf(v);
     }
