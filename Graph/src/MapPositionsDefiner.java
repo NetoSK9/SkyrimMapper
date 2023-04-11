@@ -78,7 +78,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public void addPointButtonRed(int positionX, int positionY){
         Button button = new Button();
         button.setVisible(true);
-        button.setLocation(positionX-10,positionY-10);
+        button.setLocation(positionX-10,positionY-30);
         button.setSize(10,10);
 
 
