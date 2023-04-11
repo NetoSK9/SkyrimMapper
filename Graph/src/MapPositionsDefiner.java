@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapPositionsDefiner extends JFrame implements MouseListener,ActionListener {
 
@@ -15,7 +16,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private int clickCount;
     private Button lastClickedButton = null;
     private BufferedImage imageBG;
-    private Skyrim skyrim;
 
     public MapPositionsDefiner() {
         super("Click Listener");
@@ -27,7 +27,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
-        skyrim = new Skyrim();
 
     }
 
@@ -48,12 +47,29 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         setVisible(true);
     }
 
+    public void showLowestCostRoute(Point origin, Point destiny){
+
+        Dijkstra dijkistra = new Dijkstra();
+        List<Integer> lowestCostRoute =  dijkistra.lowestCostRoute(routes,origin,destiny);
+
+        System.out.println("Tamanho do vetor das rotas: " + lowestCostRoute.size());
+        for (int indice : lowestCostRoute ) {
+            routes.get(indice).setColor(Color.RED);
+        }
+
+        drawAllLines();
+    }
+
+    public Point calculateMidpointButton(Button button){
+        Point point = button.getLocationOnScreen();
+        point.x += lastClickedButton.getWidth() / 2;
+        point.y += lastClickedButton.getHeight() / 2;
+        return point;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        skyrim.setVillages(points);
-        skyrim.setRoutes(routes);
         clickCount++;
         if (lastClickedButton == null) {
             lastClickedButton = (Button) source;
@@ -61,26 +77,29 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         } else {
             if (lastClickedButton!=((Button) source)){
                 if (lastClickedButton.getBackground() == Color.GREEN){
-                    Point pointStart = lastClickedButton.getLocationOnScreen();
-                    pointStart.x += lastClickedButton.getWidth() / 2;
-                    pointStart.y += lastClickedButton.getHeight() / 2;
-                    Point pointEnd = ((Button) source).getLocationOnScreen();
-                    pointEnd.x += ((Button) source).getWidth() / 2;
-                    pointEnd.y += ((Button) source).getHeight() / 2;
+                    Point pointStart = calculateMidpointButton(lastClickedButton);
+                    Point pointEnd = calculateMidpointButton( ((Button) source) );
                     addRouteInMap(pointStart, pointEnd);
                     lastClickedButton.setBackground(Color.RED);
                     lastClickedButton = null;
                     ((Button) source).setBackground(Color.RED);
                     clickCount=0;
-                } else if(lastClickedButton.getBackground() == Color.BLUE){
-                    //calcular e mostrar menor rota
+                } else if(lastClickedButton.getBackground() == Color.BLUE){//calcular e mostrar menor rota
+
+                    //Seleciona os pontos de origem e destino.
+                    Point origin = calculateMidpointButton(lastClickedButton);
+                    Point destiny = calculateMidpointButton( ((Button) source) );
+
+                    System.out.println("Vai mostrar as linhas vermelhas");
+                    showLowestCostRoute(origin,destiny);
 
                     lastClickedButton.setBackground(Color.RED);
                     lastClickedButton = null;
                     ((Button) source).setBackground(Color.RED);
                     clickCount=0;
                 } else if(lastClickedButton.getBackground() == Color.RED){
-                    drawAllLinesBlack();
+                    setAllLinesToBlack();
+                    drawAllLines();
                     lastClickedButton.setBackground(Color.RED);
                     lastClickedButton = null;
                     ((Button) source).setBackground(Color.RED);
@@ -97,7 +116,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
                 }
             }
         }
-        System.out.println(clickCount);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -131,7 +149,11 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private void drawLine(Route route) {
         Graphics g = getGraphics();
         g.setColor(route.getColor());
-        g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+        g2.dispose();
     }
 
     private void selectLineByPoints(Point startPoint, Point endPoint){
@@ -145,23 +167,13 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
 
     private void drawAllLines(){
         for (Route route : routes) {
-            Graphics g = getGraphics();
-            g.setColor(route.getColor());
-            g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+            drawLine(route);
         }
 
     }
     private void setAllLinesToBlack(){
         for (Route route : routes) {
             route.setColor(Color.BLACK);
-        }
-
-    }
-    private void drawAllLinesBlack(){
-        for (Route route : routes) {
-            Graphics g = getGraphics();
-            g.setColor(Color.black);
-            g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
         }
 
     }
