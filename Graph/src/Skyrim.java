@@ -18,7 +18,15 @@ public class Skyrim { //graph
     public void addRoute(Route r){
         routes.add(r);
     }
+    public boolean removeRoute(Route r) {
+        if (r == null || !routes.contains(r)) {
+            return false;
+        }
 
+        routes.remove(r);
+
+        return true;
+    }
     public List<Point> getVillages(){
         return villages;
     }

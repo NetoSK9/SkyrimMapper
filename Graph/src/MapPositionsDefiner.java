@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapPositionsDefiner extends JFrame implements MouseListener,ActionListener {
-
     private ArrayList<Route> routes;
     private ArrayList<Point> points;
     private ArrayList<Button> buttons;
@@ -20,14 +19,13 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public MapPositionsDefiner() {
         super("Click Listener");
         addMouseListener(this);
-        addImgBG("src/img/skyrin_map.png");
+        addImgBG("src/img/skyrim_map.png");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
-
     }
 
     public void addImgBG(String imgPath){
@@ -36,11 +34,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Configurar as dimensões da janela
+        // configurar reso da imagem
         setSize(imageBG.getWidth(), imageBG.getHeight());
 
-        // Configurar a imagem como componente
+        // configurar a imagem como componente
         setLayout(new BorderLayout());
         add(new BackgroundComponent(imageBG), BorderLayout.CENTER);
 
@@ -49,10 +46,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
 
     public void showLowestCostRoute(Point origin, Point destiny){
 
-        Dijkstra dijkistra = new Dijkstra();
-        List<Integer> lowestCostRoute =  dijkistra.lowestCostRoute(routes,origin,destiny);
+        Dijkstra d = new Dijkstra();
+        List<Integer> lowestCostRoute =  d.lowestCostRoute(routes,origin,destiny);
 
-        System.out.println("Tamanho do vetor das rotas: " + lowestCostRoute.size());
+        System.out.println("Route Vector Size: " + lowestCostRoute.size());
         for (int indice : lowestCostRoute ) {
             routes.get(indice).setColor(Color.RED);
         }
@@ -86,11 +83,11 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
                     clickCount=0;
                 } else if(lastClickedButton.getBackground() == Color.BLUE){//calcular e mostrar menor rota
 
-                    //Seleciona os pontos de origem e destino.
+                    //seleciona os pontos de origem e destino.
                     Point origin = calculateMidpointButton(lastClickedButton);
                     Point destiny = calculateMidpointButton( ((Button) source) );
 
-                    System.out.println("Vai mostrar as linhas vermelhas");
+                    System.out.println("Red lines will be shown.");
                     showLowestCostRoute(origin,destiny);
 
                     lastClickedButton.setBackground(Color.RED);
@@ -143,7 +140,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         Route route = new Route(pointStart, pointEnd,routes.size()-1 );
         routes.add(route);
         drawLine(routes.get(routes.size()-1));
-        System.out.println("Value of New Route (" + routes.get(routes.size()-1).getWeight() + ")");
+        System.out.println("Value of the New Route (" + routes.get(routes.size()-1).getWeight() + ")");
     }
 
     private void drawLine(Route route) {
@@ -159,7 +156,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private void selectLineByPoints(Point startPoint, Point endPoint){
         for (Route route : routes) {
             if( (startPoint.getLocation()==route.getOrigin().getLocation()) && (endPoint.getLocation()==route.getDestiny().getLocation()) ){
-                System.out.println("Achou!!!!! A rota: "+ route.getWeight());
+                System.out.println("Founded!!!!! The route: "+ route.getWeight());
                 route.setColor(Color.RED);
             }
         }
@@ -178,12 +175,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
 
     }
 
-
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
-
 
     public ArrayList<Point> getPoints() {
         return points;
