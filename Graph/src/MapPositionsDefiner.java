@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class MapPositionsDefiner extends JFrame implements MouseListener,ActionListener {
 
-    private ArrayList<Village> villages;
     private ArrayList<Route> routes;
-    private BufferedImage imageBG;
+    private ArrayList<Point> points;
     private ArrayList<Button> buttons;
     private Button lastClickedButton = null;
+    private BufferedImage imageBG;
 
     public MapPositionsDefiner() {
         super("Click Listener");
@@ -22,7 +22,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        villages = new ArrayList<>();
+        points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
 
@@ -53,13 +53,13 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             lastClickedButton = (Button) source;
             lastClickedButton.setBackground(Color.GREEN);
         } else {
-            Point p1 = lastClickedButton.getLocationOnScreen();
-            p1.x += lastClickedButton.getWidth() / 2;
-            p1.y += lastClickedButton.getHeight() / 2;
-            Point p2 = ((Button) source).getLocationOnScreen();
-            p2.x += ((Button) source).getWidth() / 2;
-            p2.y += ((Button) source).getHeight() / 2;
-            addRouteInMap(p1.x, p1.y, p2.x, p2.y);
+            Point pointStart = lastClickedButton.getLocationOnScreen();
+            pointStart.x += lastClickedButton.getWidth() / 2;
+            pointStart.y += lastClickedButton.getHeight() / 2;
+            Point pointEnd = ((Button) source).getLocationOnScreen();
+            pointEnd.x += ((Button) source).getWidth() / 2;
+            pointEnd.y += ((Button) source).getHeight() / 2;
+            addRouteInMap(pointStart, pointEnd);
             lastClickedButton.setBackground(Color.RED);
             lastClickedButton = null;
             ((Button) source).setBackground(Color.RED);
@@ -69,9 +69,9 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        Village village = new Village("Teste",villages.size(), x, y);
-        System.out.println("Clicked at (" + village.getX() + ", " + village.getY() + ")");
-        villages.add(village);
+        Point village = new Point( x, y);
+        System.out.println("Clicked at (" + village.x + ", " + village.y + ")");
+        points.add(village);
         addPointButtonRed(x,y);
     }
 
@@ -80,23 +80,24 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         button.setVisible(true);
         button.setLocation(positionX-10,positionY-30);
         button.setSize(10,10);
-
-
         button.setBackground(Color.RED);
         button.addActionListener(this);
+
         buttons.add(button);
         this.add(button);
-
     }
 
-    private void addRouteInMap(int village1X,int  village1Y, int village2X, int village2Y){
-        Graphics g = getGraphics();
-        g.drawLine(village1X, village1Y, village2X, village2Y);
+    private void addRouteInMap(Point pointStart,Point  pointEnd){
+        Route route = new Route(pointStart, pointEnd,routes.size()-1 );
+        routes.add(route);
+        drawLine(routes.get(routes.size()-1));
+        System.out.println("Value of New Route (" + routes.get(routes.size()-1).getWeight() + ")");
     }
 
-    private void drawLine(Village village1, Village village2) {
+    private void drawLine(Route route) {
         Graphics g = getGraphics();
-        g.drawLine(village1.getX(), village1.getY(), village2.getX(), village2.getY());
+        g.setColor(route.getColor());
+        g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
     }
 
 
@@ -106,12 +107,28 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public void mouseReleased(MouseEvent e) {}
 
 
-    public ArrayList<Village> getVillages() {
-        return villages;
+    public ArrayList<Point> getPoints() {
+        return points;
     }
 
-    public void setVillages(ArrayList<Village> villages) {
-        this.villages = villages;
+    public void setPoints(ArrayList<Point> points) {
+        this.points = points;
+    }
+
+    public ArrayList<Button> getButtons() {
+        return buttons;
+    }
+
+    public void setButtons(ArrayList<Button> buttons) {
+        this.buttons = buttons;
+    }
+
+    public Button getLastClickedButton() {
+        return lastClickedButton;
+    }
+
+    public void setLastClickedButton(Button lastClickedButton) {
+        this.lastClickedButton = lastClickedButton;
     }
 
     public ArrayList<Route> getRoutes() {

@@ -1,8 +1,9 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Skyrim { //graph
-    private List<Village> villages;
+    private List<Point> villages;
     private List<Route> routes;
 
     public Skyrim(){
@@ -10,7 +11,7 @@ public class Skyrim { //graph
         routes = new ArrayList<>();
     }
 
-    public void addVillage(Village v){
+    public void addVillage(Point v){
         villages.add(v);
     }
 
@@ -18,7 +19,7 @@ public class Skyrim { //graph
         routes.add(r);
     }
 
-    public List<Village> getVillages(){
+    public List<Point> getVillages(){
         return villages;
     }
 
@@ -26,15 +27,15 @@ public class Skyrim { //graph
         return routes;
     }
 
-    public int getIndexVillage(Village v){
+    public int getIndexVillage(Point v){
         return villages.indexOf(v);
     }
 
-    public Village getVillage(int index){
+    public Point getVillage(int index){
         return villages.get(index);
     }
 
-    public Route getRoute(Village originMarked, Village markedDestination){
+    public Route getRoute(Point originMarked, Point markedDestination){
         for (Route r : routes){
             if(r.getOrigin().equals(originMarked) && r.getDestiny().equals(markedDestination)){
                 return r;
@@ -62,7 +63,7 @@ public class Skyrim { //graph
         for(Route r: routes){
             int i = getIndexVillage(r.getOrigin());
             int j = getIndexVillage(r.getDestiny());
-            matrix[i][j] = r.getWeight();
+            //matrix[i][j] = r.getWeight();
         }
 
         return matrix;
@@ -86,7 +87,7 @@ public class Skyrim { //graph
         }
     }
 
-    public int[] dijkstra(Village origin) {
+    public int[] dijkstra(Point origin) {
         int n = villages.size();
         int[] distance = new int[n];
         boolean[] visited = new boolean[n];
