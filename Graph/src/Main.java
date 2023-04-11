@@ -18,5 +18,8 @@ public class Main {
         s.addRoute(new Route(v1, v3, 3));
         s.addRoute(new Route(v2, v4, 2));
         s.addRoute(new Route(v3, v5, 5));
+
+        MapPositionsDefiner mainMap = new MapPositionsDefiner();
+
     }
 }
