@@ -7,11 +7,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MapPositionsDefiner extends JFrame implements MouseListener {
+public class MapPositionsDefiner extends JFrame implements MouseListener,ActionListener {
 
     private ArrayList<Village> villages;
     private ArrayList<Route> routes;
     private BufferedImage imageBG;
+    private ArrayList<Button> buttons;
+    private Button lastClickedButton = null;
 
     public MapPositionsDefiner() {
         super("Click Listener");
@@ -22,6 +24,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
 
         villages = new ArrayList<>();
         routes = new ArrayList<>();
+        buttons = new ArrayList<>();
 
     }
 
@@ -41,25 +44,26 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
 
         setVisible(true);
     }
-    private class BackgroundComponent extends Component {
 
-        private BufferedImage image;
 
-        public BackgroundComponent(BufferedImage image) {
-            this.image = image;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+        if (lastClickedButton == null) {
+            lastClickedButton = (Button) source;
+            lastClickedButton.setBackground(Color.GREEN);
+        } else {
+            Point p1 = lastClickedButton.getLocationOnScreen();
+            p1.x += lastClickedButton.getWidth() / 2;
+            p1.y += lastClickedButton.getHeight() / 2;
+            Point p2 = ((Button) source).getLocationOnScreen();
+            p2.x += ((Button) source).getWidth() / 2;
+            p2.y += ((Button) source).getHeight() / 2;
+            addRouteInMap(p1.x, p1.y, p2.x, p2.y);
+            lastClickedButton.setBackground(Color.RED);
+            lastClickedButton = null;
+            ((Button) source).setBackground(Color.RED);
         }
-
-        @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(image.getWidth(), image.getHeight());
-        }
-
-        @Override
-        public void paint(Graphics g) {
-            super.paint(g);
-            g.drawImage(image, 0, 0, null);
-        }
-
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -69,9 +73,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
         System.out.println("Clicked at (" + village.getX() + ", " + village.getY() + ")");
         villages.add(village);
         addPointButtonRed(x,y);
-        if(villages.size()>=2){
-            drawLine(villages.get(villages.size()-2),villages.get(villages.size()-1));
-        }
     }
 
     public void addPointButtonRed(int positionX, int positionY){
@@ -82,13 +83,22 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
 
 
         button.setBackground(Color.RED);
+        button.addActionListener(this);
+        buttons.add(button);
         this.add(button);
+
+    }
+
+    private void addRouteInMap(int village1X,int  village1Y, int village2X, int village2Y){
+        Graphics g = getGraphics();
+        g.drawLine(village1X, village1Y, village2X, village2Y);
     }
 
     private void drawLine(Village village1, Village village2) {
         Graphics g = getGraphics();
         g.drawLine(village1.getX(), village1.getY(), village2.getX(), village2.getY());
     }
+
 
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
@@ -110,5 +120,26 @@ public class MapPositionsDefiner extends JFrame implements MouseListener {
 
     public void setRoutes(ArrayList<Route> routes) {
         this.routes = routes;
+    }
+
+    private class BackgroundComponent extends Component {
+
+        private BufferedImage image;
+
+        public BackgroundComponent(BufferedImage image) {
+            this.image = image;
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(image.getWidth(), image.getHeight());
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            g.drawImage(image, 0, 0, null);
+        }
+
     }
 }
