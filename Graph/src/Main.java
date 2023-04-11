@@ -42,6 +42,7 @@ public class Main {
 
 
         System.out.println("O print de whiterun no mapa é: " + whiterun.toString());
+        MapPositionsDefiner mainMap = new MapPositionsDefiner();
 
     }
 }
