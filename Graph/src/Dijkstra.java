@@ -36,7 +36,7 @@ public class Dijkstra {
 
             unvisited.remove(current);
 
-            // calcula a distância dos vizinhos
+            // calcula a distância dos vértices vizinhos
             for (Route route : routes) {
                 if (route.getOrigin().equals(current)) {
                     int alt = distance.get(current) + route.getWeight();

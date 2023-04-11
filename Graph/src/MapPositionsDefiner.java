@@ -16,7 +16,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private int clickCount;
     private Button lastClickedButton = null;
     private BufferedImage imageBG;
-    private Skyrim skyrim;
 
     public MapPositionsDefiner() {
         super("Click Listener");
@@ -28,7 +27,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
-        skyrim = new Skyrim();
 
     }
 
@@ -72,8 +70,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        skyrim.setVillages(points);
-        skyrim.setRoutes(routes);
         clickCount++;
         if (lastClickedButton == null) {
             lastClickedButton = (Button) source;
@@ -153,7 +149,11 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private void drawLine(Route route) {
         Graphics g = getGraphics();
         g.setColor(route.getColor());
-        g.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+        g2.dispose();
     }
 
     private void selectLineByPoints(Point startPoint, Point endPoint){
