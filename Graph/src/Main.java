@@ -1,12 +1,14 @@
+import java.awt.*;
+
 public class Main {
     public static void main(String[] args) {
         Skyrim skyrim = new Skyrim();
 
-        Village whiterun = new Village("Whiterun", 1, 0, 0);
-        Village morthal = new Village("Morthal", 2, 1, 0);
-        Village markath = new Village("Markath", 3, 0, 1);
-        Village winterhold = new Village("Winterhold", 4, 1, 1);
-        Village riften = new Village("Riften", 5, 2, 0);
+        Point whiterun = new Point( 0, 0);
+        Point morthal = new Point( 1, 0);
+        Point markath = new Point( 0, 1);
+        Point winterhold = new Point(1, 1);
+        Point riften = new Point(2, 0);
 
         System.out.println("Adicionando vilas e rotas...");
         skyrim.addVillage(whiterun);
@@ -25,23 +27,22 @@ public class Main {
         Route morthalToWinterhold = new Route(morthal, winterhold, MORTHAL_WINTERHOLD_DISTANCE, 2);
         Route markathToRiften = new Route(markath, riften, MARKATH_RIFTEN_DISTANCE, 3);
 
+
         skyrim.addRoute(whiterunToMorthal);
         skyrim.addRoute(whiterunToMarkath);
         skyrim.addRoute(morthalToWinterhold);
         skyrim.addRoute(markathToRiften);
         System.out.println("Vilas e rotas adicionadas com sucesso!");
 
-        System.out.println("Calculando as distâncias a partir de " + whiterun.getName() + "...");
+
         int[] distancesFromWhiterun = skyrim.dijkstra(whiterun);
         System.out.println("Distâncias calculadas com sucesso!");
 
-        System.out.println("Distâncias a partir de " + whiterun.getName() + ":");
+        System.out.println("Distâncias a partir de " + whiterun.getLocation() + ":");
         for (int i = 0; i < distancesFromWhiterun.length; i++) {
-            System.out.println("- " + skyrim.getVillage(i).getName() + ": " + distancesFromWhiterun[i]);
+            System.out.println("- " + skyrim.getVillage(i).getLocation() + ": " + distancesFromWhiterun[i]);
         }
 
-
-        System.out.println("O print de whiterun no mapa é: " + whiterun.toString());
         MapPositionsDefiner mainMap = new MapPositionsDefiner();
 
     }
