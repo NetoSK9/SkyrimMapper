@@ -6,7 +6,8 @@ import java.awt.*;
 
 public class SkyrimTest {
     private Skyrim skyrim;
-    private Point whiterun; //nao definindo no escopo pois está sendo usado em mais de 1 método
+    private Point whiterun;
+    //nao definindo no escopo do método pois está sendo usado em mais de 1 método
     private Point morthal;
     private Point markarth;
     private Point winterhold;
@@ -43,7 +44,7 @@ public class SkyrimTest {
     public void testDijkstra() {
         int[] distancesFromWhiterun = skyrim.dijkstra(whiterun);
 
-        Assertions.assertEquals(0, distancesFromWhiterun[0]); //Whiterun para whiterun = 0
+        Assertions.assertEquals(0, distancesFromWhiterun[0]); //Whiterun para Whiterun = 0
         Assertions.assertEquals(1, distancesFromWhiterun[1]); //Whiterun para Morthal = 1
         Assertions.assertEquals(3, distancesFromWhiterun[2]); //Whiterun para Markarth = 3
         Assertions.assertEquals(3, distancesFromWhiterun[3]); //Whiterun para Winterhold = 1 + 2 = 3

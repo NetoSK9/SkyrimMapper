@@ -54,7 +54,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         for (int indice : lowestCostRoute ) {
             routes.get(indice).setColor(Color.RED);
         }
-
         drawAllLines();
     }
 
@@ -83,7 +82,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
                     ((Button) source).setBackground(Color.RED);
                     clickCount=0;
                 } else if(lastClickedButton.getBackground() == Color.BLUE){//calcular e mostrar menor rota
-
                     //seleciona os pontos de origem e destino.
                     Point origin = calculateMidpointButton(lastClickedButton);
                     Point destiny = calculateMidpointButton( ((Button) source) );
@@ -167,13 +165,11 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         for (Route route : routes) {
             drawLine(route);
         }
-
     }
     private void setAllLinesToBlack(){
         for (Route route : routes) {
             route.setColor(Color.BLACK);
         }
-
     }
 
     public void mouseEntered(MouseEvent e) {}
@@ -231,6 +227,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             super.paint(g);
             g.drawImage(image, 0, 0, null);
         }
-
     }
+
 }

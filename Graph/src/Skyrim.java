@@ -22,7 +22,6 @@ public class Skyrim { //graph
         if (r == null || !routes.contains(r)) {
             return false;
         }
-
         routes.remove(r);
 
         return true;
@@ -78,8 +77,6 @@ public class Skyrim { //graph
         return false;
     }
 
-
-
     public int getNumberVillages(){
         return villages.size();
     }
@@ -101,7 +98,6 @@ public class Skyrim { //graph
             int j = getIndexVillage(r.getDestiny());
             //matrix[i][j] = r.getWeight();
         }
-
         return matrix;
     }
 
@@ -150,7 +146,6 @@ public class Skyrim { //graph
                 }
             }
         }
-
         return distance;
     }
 
@@ -164,7 +159,6 @@ public class Skyrim { //graph
                 minIndice = i;
             }
         }
-
         return minIndice;
     }
 }

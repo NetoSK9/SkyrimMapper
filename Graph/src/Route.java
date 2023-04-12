@@ -54,6 +54,7 @@ public class Route { //edge
         int response =Double.valueOf( Math.sqrt( (distanceX*distanceX) + (distanceY * distanceY) ) ).intValue();
         return response;
     }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
