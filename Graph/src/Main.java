@@ -4,9 +4,9 @@ public class Main {
     public static void main(String[] args) {
         Skyrim skyrim = new Skyrim();
 
-        Point whiterun = new Point( 0, 0);
-        Point morthal = new Point( 1, 0);
-        Point markath = new Point( 0, 1);
+        Point whiterun = new Point(0, 0);
+        Point morthal = new Point(1, 0);
+        Point markath = new Point(0, 1);
         Point winterhold = new Point(1, 1);
         Point riften = new Point(2, 0);
 
@@ -33,7 +33,6 @@ public class Main {
         skyrim.addRoute(markathToRiften);
         System.out.println("Villages and Routes successfully added!");
 
-
         int[] distancesFromWhiterun = skyrim.dijkstra(whiterun);
         System.out.println("Distances calculated with successfully!");
 
@@ -41,7 +40,18 @@ public class Main {
         for (int i = 0; i < distancesFromWhiterun.length; i++) {
             System.out.println("- " + skyrim.getVillage(i).getLocation() + ": " + distancesFromWhiterun[i]);
         }
-        //This first part it's about the algorithm
+
+        System.out.println("\nRemoving a route...");
+        Route routeToRemove = skyrim.getRoute(whiterun, morthal);
+        boolean success = skyrim.removeRoute(routeToRemove);
+        System.out.println("Route removed with success? " + success);
+
+        System.out.println("\nRoutes after removing one:");
+        for (Route r : skyrim.getRoutes()) {
+            System.out.println(r.getOrigin() + " -> " + r.getDestiny() + " Weight: " + r.getWeight());
+        }
+
+    //This first part it's about the algorithm 1, now begins the second part(GUI).
 
 
         MapPositionsDefiner mainMap = new MapPositionsDefiner();

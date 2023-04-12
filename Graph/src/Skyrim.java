@@ -60,6 +60,26 @@ public class Skyrim { //graph
         return null;
     }
 
+    public boolean containsVillage(Point p) {
+        for (Point point : villages) {
+            if (point.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsRoute(Route r) {
+        for (Route route : routes) {
+            if (route.equals(r)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     public int getNumberVillages(){
         return villages.size();
     }

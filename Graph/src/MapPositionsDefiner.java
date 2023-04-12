@@ -34,6 +34,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         // configurar reso da imagem
         setSize(imageBG.getWidth(), imageBG.getHeight());
 
