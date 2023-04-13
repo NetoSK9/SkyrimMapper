@@ -17,15 +17,42 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     private BufferedImage imageBG;
 
     public MapPositionsDefiner() {
-        super("Click Listener");
+        super("Skyrin Mapper");
         addMouseListener(this);
         addImgBG("src/img/skyrim_map.png");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(MAXIMIZED_BOTH);
+        setResizable(false);
 
         points = new ArrayList<>();
         routes = new ArrayList<>();
         buttons = new ArrayList<>();
+        String tutorial = "Tutorial";
+        String hello = "Olá, primeiro vamos começar com o tutorial de como utilizar nosso mapa!";
+        String addButtonsOnMap = "Primeiro de tudo teremos de adicionar alguns pontos no mapa,\n" +
+                " para isso basta clicar em qualquer lugar do mapa :)";
+        String putRoutesOnMap = "Depois é preciso adicionar algumas rotas de um ponto a outro do mapa,\n" +
+                " para isso basta você clicar em um ponto do mapa," +
+                " e assim que ele\n estiver verde basta clicar em qualquer outro" +
+                " ponto do mapa e você terá\n uma rota adiconada :)";
+        String findPath = "Para achar o menor caminho também é simples,\n" +
+                " basta clicar em um ponto do mapa 2 vezes," +
+                " e ele ficará azul sinalizando que\n você já pode clicar em qualquer outro ponto. \n" +
+                "Assim que clicar a rota aparecerá vermelha no mapa :)";
+        String cleanRoutes = "Para limpar as rotas e deixar todas negras novamete\n" +
+                " basta clicar em algum ponto do mapa 3 vezes e ele voltará a ficar vermelho\n" +
+                " após isso basta clicar em outro ponto do mapa e isso vai limpar todas as rotas feitas :)";
+        String bye = "Divirta-se com os caminhos, até a próxima :)";
+        String credits = "Desenvolvido por: Neto B. ; Benjamin ; Giu;";
+
+        JOptionPane.showMessageDialog(this, hello , tutorial, 1);
+        JOptionPane.showMessageDialog(this, addButtonsOnMap , tutorial, 1);
+        JOptionPane.showMessageDialog(this, putRoutesOnMap , tutorial, 1);
+        JOptionPane.showMessageDialog(this, findPath , tutorial, 1);
+        JOptionPane.showMessageDialog(this, cleanRoutes , tutorial, 2);
+        JOptionPane.showMessageDialog(this, credits , tutorial, 1);
+        JOptionPane.showMessageDialog(this, bye , tutorial, 1);
     }
 
     public void addImgBG(String imgPath){
@@ -45,10 +72,30 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         setVisible(true);
     }
 
-    public void showLowestCostRoute(Point origin, Point destiny){
 
-        Dijkstra d = new Dijkstra();
-        List<Integer> lowestCostRoute =  d.lowestCostRoute(routes,origin,destiny);
+
+    public Point calculateMidpointButton(Button button){
+        Point point = button.getLocationOnScreen();
+        point.x += button.getWidth() ;
+        point.y += button.getHeight();
+        return point;
+    }
+    public void addPointButtonRed(int positionX, int positionY){
+        Button button = new Button();
+        button.setVisible(true);
+        button.setSize(12,12);
+        button.setLocation(positionX-button.getWidth(),positionY-(button.getHeight()*2)-(button.getHeight() / 2) );
+        button.setBackground(Color.RED);
+        button.addActionListener(this);
+        buttons.add(button);
+        this.add(button);
+        Point village  = calculateMidpointButton(button);
+        points.add(village);
+    }
+
+    public void showLowestCostRoute(Point origin, Point destiny){
+        Dijkstra dj = new Dijkstra(routes, points);
+        List<Integer> lowestCostRoute = dj.lowestCostRoute(origin,destiny);
 
         System.out.println("Route Vector Size: " + lowestCostRoute.size());
         for (int indice : lowestCostRoute ) {
@@ -57,11 +104,33 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         drawAllLines();
     }
 
-    public Point calculateMidpointButton(Button button){
-        Point point = button.getLocationOnScreen();
-        point.x += lastClickedButton.getWidth() / 2;
-        point.y += lastClickedButton.getHeight() / 2;
-        return point;
+    private void addRouteInMap(Point pointStart,Point  pointEnd){
+        Route route = new Route(pointStart, pointEnd,routes.size()-1 );
+        routes.add(route);
+        drawLine(routes.get(routes.size()-1));
+        System.out.println("Value of New Route (" + routes.get(routes.size()-1).getWeight() + ")");
+    }
+
+    private void drawLine(Route route) {
+        Graphics g = getGraphics();
+        g.setColor(route.getColor());
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setStroke(new BasicStroke(3));
+        g2.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
+        g2.dispose();
+    }
+
+    private void drawAllLines(){
+        for (Route route : routes) {
+            drawLine(route);
+        }
+
+    }
+    private void setAllLinesToBlack(){
+        for (Route route : routes) {
+            route.setColor(Color.BLACK);
+        }
     }
 
     @Override
@@ -72,7 +141,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             lastClickedButton = (Button) source;
             lastClickedButton.setBackground(Color.GREEN);
         } else {
-            if (lastClickedButton!=((Button) source)){
+            if (lastClickedButton!= source){
                 if (lastClickedButton.getBackground() == Color.GREEN){
                     Point pointStart = calculateMidpointButton(lastClickedButton);
                     Point pointEnd = calculateMidpointButton( ((Button) source) );
@@ -117,59 +186,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        Point village = new Point( x, y);
-        System.out.println("Clicked at (" + village.x + ", " + village.y + ")");
-        points.add(village);
         addPointButtonRed(x,y);
-    }
-
-    public void addPointButtonRed(int positionX, int positionY){
-        Button button = new Button();
-        button.setVisible(true);
-        button.setLocation(positionX-10,positionY-30);
-        button.setSize(10,10);
-        button.setBackground(Color.RED);
-        button.addActionListener(this);
-
-        buttons.add(button);
-        this.add(button);
-    }
-
-    private void addRouteInMap(Point pointStart,Point  pointEnd){
-        Route route = new Route(pointStart, pointEnd,routes.size()-1 );
-        routes.add(route);
-        drawLine(routes.get(routes.size()-1));
-        System.out.println("Value of the New Route (" + routes.get(routes.size()-1).getWeight() + ")");
-    }
-
-    private void drawLine(Route route) {
-        Graphics g = getGraphics();
-        g.setColor(route.getColor());
-
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setStroke(new BasicStroke(3));
-        g2.drawLine(route.getOrigin().x, route.getOrigin().y, route.getDestiny().x, route.getDestiny().y);
-        g2.dispose();
-    }
-
-    private void selectLineByPoints(Point startPoint, Point endPoint){
-        for (Route route : routes) {
-            if( (startPoint.getLocation()==route.getOrigin().getLocation()) && (endPoint.getLocation()==route.getDestiny().getLocation()) ){
-                System.out.println("Founded!!!!! The route: "+ route.getWeight());
-                route.setColor(Color.RED);
-            }
-        }
-    }
-
-    private void drawAllLines(){
-        for (Route route : routes) {
-            drawLine(route);
-        }
-    }
-    private void setAllLinesToBlack(){
-        for (Route route : routes) {
-            route.setColor(Color.BLACK);
-        }
     }
 
     public void mouseEntered(MouseEvent e) {}
