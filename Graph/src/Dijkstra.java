@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -31,7 +32,12 @@ public class Dijkstra {
 
         int[] distances = new int[numVertices];
         int[] previousVertices = new int[numVertices];
-        PriorityQueue<Integer> pq = new PriorityQueue<>((u, v) -> distances[u] - distances[v]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer u, Integer v) {
+                return distances[u] - distances[v];
+            }
+        });
         for (int i = 0; i < numVertices; i++) {
             if (i == startIndex) {
                 distances[i] = 0;
@@ -43,46 +49,46 @@ public class Dijkstra {
         }
 
         while (!pq.isEmpty()) {
-            int u = pq.poll();
-            if (distances[u] == Integer.MAX_VALUE) {
+            int currentVertex = pq.poll();
+            if (distances[currentVertex] == Integer.MAX_VALUE) {
                 break;
             }
 
-            for (Route route : graph.get(u)) {
-                int v = verticesList.indexOf(getOtherVertex(u, route));
-                int alternativeDistance = distances[u] + route.getWeight();
-                if (alternativeDistance < distances[v]) {
-                    distances[v] = alternativeDistance;
-                    previousVertices[v] = u;
-                    pq.remove(v);
-                    pq.add(v);
+            for (Route route : graph.get(currentVertex)) {
+                int nextVertex = verticesList.indexOf(getOtherVertex(currentVertex, route));
+                int alternativeDistance = distances[currentVertex] + route.getWeight();
+                if (alternativeDistance < distances[nextVertex]) {
+                    distances[nextVertex] = alternativeDistance;
+                    previousVertices[nextVertex] = currentVertex;
+                    pq.remove(nextVertex);
+                    pq.add(nextVertex);
                 }
             }
         }
 
         List<Integer> path = new ArrayList<>();
-        int u = endIndex;
-        while (previousVertices[u] != -1) {
-            path.add(0, getRouteIndex(previousVertices[u], u));
-            u = previousVertices[u];
+        int currentVertex = endIndex;
+        while (previousVertices[currentVertex] != -1) {
+            path.add(0, getRouteIndex(previousVertices[currentVertex], currentVertex));
+            currentVertex = previousVertices[currentVertex];
         }
 
         return path;
     }
 
-    private Point getOtherVertex(int u, Route route) {
-        if (route.getOrigin().equals(verticesList.get(u))) {
+    private Point getOtherVertex(int currentVertex, Route route) {
+        if (route.getOrigin().equals(verticesList.get(currentVertex))) {
             return route.getDestiny();
         } else {
             return route.getOrigin();
         }
     }
 
-    private int getRouteIndex(int u, int v) {
+    private int getRouteIndex(int currentVertex, int nextVertex) {
         for (int i = 0; i < routesList.size(); i++) {
             Route route = routesList.get(i);
-            if ((route.getOrigin().equals(verticesList.get(u)) && route.getDestiny().equals(verticesList.get(v))) ||
-                    (route.getOrigin().equals(verticesList.get(v)) && route.getDestiny().equals(verticesList.get(u)))) {
+            if ((route.getOrigin().equals(verticesList.get(currentVertex)) && route.getDestiny().equals(verticesList.get(nextVertex))) ||
+                    (route.getOrigin().equals(verticesList.get(nextVertex)) && route.getDestiny().equals(verticesList.get(currentVertex)))) {
                 return i;
             }
         }

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapPositionsDefiner extends JFrame implements MouseListener,ActionListener {
-
     private ArrayList<Route> routes;
     private ArrayList<Point> points;
     private ArrayList<Button> buttons;
@@ -20,7 +19,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     public MapPositionsDefiner() {
         super("Skyrin Mapper");
         addMouseListener(this);
-        addImgBG("src/img/skyrin_map.png");
+        addImgBG("src/img/skyrim_map.png");
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
@@ -54,7 +53,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
         JOptionPane.showMessageDialog(this, cleanRoutes , tutorial, 2);
         JOptionPane.showMessageDialog(this, credits , tutorial, 1);
         JOptionPane.showMessageDialog(this, bye , tutorial, 1);
-
     }
 
     public void addImgBG(String imgPath){
@@ -64,10 +62,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             e.printStackTrace();
         }
 
-        // Configurar as dimensões da janela
+        // configurar reso da imagem
         setSize(imageBG.getWidth(), imageBG.getHeight());
 
-        // Configurar a imagem como componente
+        // configurar a imagem como componente
         setLayout(new BorderLayout());
         add(new BackgroundComponent(imageBG), BorderLayout.CENTER);
 
@@ -96,11 +94,10 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
     }
 
     public void showLowestCostRoute(Point origin, Point destiny){
-
         Dijkstra dj = new Dijkstra(routes, points);
         List<Integer> lowestCostRoute = dj.lowestCostRoute(origin,destiny);
 
-        System.out.println("Tamanho do vetor das rotas: " + lowestCostRoute.size());
+        System.out.println("Route Vector Size: " + lowestCostRoute.size());
         for (int indice : lowestCostRoute ) {
             routes.get(indice).setColor(Color.RED);
         }
@@ -144,7 +141,7 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             lastClickedButton = (Button) source;
             lastClickedButton.setBackground(Color.GREEN);
         } else {
-            if (lastClickedButton!=((Button) source)){
+            if (lastClickedButton!= source){
                 if (lastClickedButton.getBackground() == Color.GREEN){
                     Point pointStart = calculateMidpointButton(lastClickedButton);
                     Point pointEnd = calculateMidpointButton( ((Button) source) );
@@ -154,12 +151,11 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
                     ((Button) source).setBackground(Color.RED);
                     clickCount=0;
                 } else if(lastClickedButton.getBackground() == Color.BLUE){//calcular e mostrar menor rota
-
-                    //Seleciona os pontos de origem e destino.
+                    //seleciona os pontos de origem e destino.
                     Point origin = calculateMidpointButton(lastClickedButton);
                     Point destiny = calculateMidpointButton( ((Button) source) );
 
-                    System.out.println("Vai mostrar as linhas vermelhas");
+                    System.out.println("Red lines will be shown.");
                     showLowestCostRoute(origin,destiny);
 
                     lastClickedButton.setBackground(Color.RED);
@@ -248,6 +244,6 @@ public class MapPositionsDefiner extends JFrame implements MouseListener,ActionL
             super.paint(g);
             g.drawImage(image, 0, 0, null);
         }
-
     }
+
 }

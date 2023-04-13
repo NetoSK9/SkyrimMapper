@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Objects;
 
 public class Route { //edge
     private Point origin;
@@ -22,7 +23,6 @@ public class Route { //edge
         this.id = id;
         color = Color.BLACK;
     }
-
 
     public Point getOrigin() {
         return origin;
@@ -53,5 +53,18 @@ public class Route { //edge
         double distanceY = pointDestiny.y - pointOrigin.y;
         int response =Double.valueOf( Math.sqrt( (distanceX*distanceX) + (distanceY * distanceY) ) ).intValue();
         return response;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Route)) return false;
+        Route r = (Route) o;
+        return Objects.equals(origin, r.origin) && Objects.equals(destiny, r.destiny) && weight == r.weight;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(origin, destiny, weight);
     }
 }
